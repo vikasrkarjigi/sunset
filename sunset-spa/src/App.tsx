@@ -1,23 +1,21 @@
 import { useState } from 'react'
 import { FIXTURE_INVENTORY } from './assets/fixtures/fixtureInventory'
 import { normalizeAllFixtures } from './lib/evidence/normalizeFixture'
-import { ResultCardGrid } from './components/results/ResultCardGrid'
+import { DashboardShell } from './components/dashboard/DashboardShell'
 import { OutputDiffPanel } from './components/evidence/OutputDiffPanel'
-import { toCardViewModel } from './types/results'
 import type { NormalizedResult } from './types/evidence'
 import './styles.css'
 
-// Normalize and convert to card view models at module load — fixtures are static.
+// Normalize fixtures once at module load — fixtures are static.
 const RESULTS = normalizeAllFixtures(FIXTURE_INVENTORY)
-const CARD_MODELS = RESULTS.map(toCardViewModel)
+
+// ── evidence detail ───────────────────────────────────────────────────────────
 
 const VERDICT_LABELS: Record<string, string> = {
   green_light: 'Green Light',
   escalated: 'Escalated',
   unverifiable: 'Unverifiable',
 }
-
-// ── evidence detail ───────────────────────────────────────────────────────────
 
 interface EvidenceDetailProps {
   readonly result: NormalizedResult
@@ -70,8 +68,8 @@ function App() {
       </header>
 
       <main className="app-main" role="main">
-        <ResultCardGrid
-          results={CARD_MODELS}
+        <DashboardShell
+          results={RESULTS}
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
