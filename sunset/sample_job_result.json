@@ -1,0 +1,104 @@
+{
+  "verdict": "green_light",
+  "fixture_name": "a_invoice_recon",
+  "legacy_image": "python:2.7-slim",
+  "modern_image": "python:3.12-slim",
+  "determinism_check_passed": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "candidate_script": "# Attempt 1: naive Python 3 port.\nimport csv\n\n\ndef main():\n    with open('invoices.csv', 'r', newline='') as f:\n        reader = csv.reader(f)\n        next(reader)  # skip header\n        for row in reader:\n            invoice_id, amount_str, qty_str = row[0], row[1], row[2]\n            amount = float(amount_str)\n            qty = int(qty_str)\n            line_total = amount * qty\n            print(line_total)\n\n\nif __name__ == '__main__':\n    main()\n",
+      "legacy": {
+        "stdout": "129.69\n299.20\n48.53\n684.80\n87.80\n11.20\n238.15\n611.95\n218.85\n347.24\n119.91\n305.94\n423.42\n118.36\n574.98\n99.72\n71.58\n122.73\n736.50\n117.36\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 0,
+        "sandbox_id": "sample-local-subprocess"
+      },
+      "candidate": {
+        "stdout": "129.69\n299.2\n48.53\n684.8000000000001\n87.8\n11.2\n238.15\n611.95\n218.85000000000002\n347.24\n119.91\n305.94\n423.41999999999996\n118.36\n574.98\n99.72\n71.58\n122.73\n736.5\n117.36\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 0,
+        "sandbox_id": "sample-local-subprocess"
+      },
+      "divergence": {
+        "kind": "content",
+        "rows": [
+          {
+            "line_no": 2,
+            "legacy_value": "299.20",
+            "rewrite_value": "299.2"
+          },
+          {
+            "line_no": 4,
+            "legacy_value": "684.80",
+            "rewrite_value": "684.8000000000001"
+          },
+          {
+            "line_no": 5,
+            "legacy_value": "87.80",
+            "rewrite_value": "87.8"
+          },
+          {
+            "line_no": 6,
+            "legacy_value": "11.20",
+            "rewrite_value": "11.2"
+          },
+          {
+            "line_no": 9,
+            "legacy_value": "218.85",
+            "rewrite_value": "218.85000000000002"
+          },
+          {
+            "line_no": 13,
+            "legacy_value": "423.42",
+            "rewrite_value": "423.41999999999996"
+          },
+          {
+            "line_no": 19,
+            "legacy_value": "736.50",
+            "rewrite_value": "736.5"
+          }
+        ],
+        "total_diverging": 7,
+        "total_compared": 20,
+        "exit_code_legacy": 0,
+        "exit_code_rewrite": 0
+      },
+      "feedback": "Attempt 1 diverged from the legacy behaviour.\n\nDivergence type: output content\nLine 2:\n  legacy output:  299.20\n  rewrite output: 299.2\nLine 4:\n  legacy output:  684.80\n  rewrite output: 684.8000000000001\nLine 5:\n  legacy output:  87.80\n  rewrite output: 87.8\nLine 6:\n  legacy output:  11.20\n  rewrite output: 11.2\nLine 9:\n  legacy output:  218.85\n  rewrite output: 218.85000000000002\n  ... and 2 more diverging lines\nExit codes: legacy 0, rewrite 0\n\nTotal diverging rows: 7 of 20."
+    },
+    {
+      "attempt": 2,
+      "candidate_script": "# Attempt 2: preserves the legacy %.2f formatting behaviour exactly,\n# per the structured feedback from attempt 1's divergence report.\nimport csv\n\n\ndef main():\n    with open('invoices.csv', 'r', newline='') as f:\n        reader = csv.reader(f)\n        next(reader)  # skip header\n        for row in reader:\n            invoice_id, amount_str, qty_str = row[0], row[1], row[2]\n            amount = float(amount_str)\n            qty = int(qty_str)\n            line_total = amount * qty\n            print(\"%.2f\" % line_total)\n\n\nif __name__ == '__main__':\n    main()\n",
+      "legacy": {
+        "stdout": "129.69\n299.20\n48.53\n684.80\n87.80\n11.20\n238.15\n611.95\n218.85\n347.24\n119.91\n305.94\n423.42\n118.36\n574.98\n99.72\n71.58\n122.73\n736.50\n117.36\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 0,
+        "sandbox_id": "sample-local-subprocess"
+      },
+      "candidate": {
+        "stdout": "129.69\n299.20\n48.53\n684.80\n87.80\n11.20\n238.15\n611.95\n218.85\n347.24\n119.91\n305.94\n423.42\n118.36\n574.98\n99.72\n71.58\n122.73\n736.50\n117.36\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 0,
+        "sandbox_id": "sample-local-subprocess"
+      },
+      "divergence": {
+        "kind": "none",
+        "rows": [],
+        "total_diverging": 0,
+        "total_compared": 20,
+        "exit_code_legacy": 0,
+        "exit_code_rewrite": 0
+      },
+      "feedback": "Attempt 2: no divergence."
+    }
+  ],
+  "final_candidate": "# Attempt 2: preserves the legacy %.2f formatting behaviour exactly,\n# per the structured feedback from attempt 1's divergence report.\nimport csv\n\n\ndef main():\n    with open('invoices.csv', 'r', newline='') as f:\n        reader = csv.reader(f)\n        next(reader)  # skip header\n        for row in reader:\n            invoice_id, amount_str, qty_str = row[0], row[1], row[2]\n            amount = float(amount_str)\n            qty = int(qty_str)\n            line_total = amount * qty\n            print(\"%.2f\" % line_total)\n\n\nif __name__ == '__main__':\n    main()\n"
+}
