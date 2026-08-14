@@ -1,0 +1,32 @@
+{
+  "fixtures": [
+    {
+      "key": "a",
+      "title": "Invoice Reconciliation",
+      "subtitle": "Fails attempt 1, converges on attempt 2",
+      "file": "green_light_after_repair.json",
+      "narrative": "Naive Python 3 port dropped the legacy %.2f formatting. Sunset caught it, fed the exact diverging rows back, and attempt 2 matched exactly."
+    },
+    {
+      "key": "b",
+      "title": "Inventory Export",
+      "subtitle": "Clean pass on attempt 1",
+      "file": "clean_pass.json",
+      "narrative": "Straightforward integer-only port. Green light immediately -- the fast happy path."
+    },
+    {
+      "key": "c",
+      "title": "Audit Log Summarizer",
+      "subtitle": "Escalated after 3 attempts",
+      "file": "escalated.json",
+      "narrative": "Three distinct rewrite attempts, each wrong in a different way. Sunset refuses to claim false success and escalates to a human with the full divergence history."
+    },
+    {
+      "key": "d",
+      "title": "Session Logger",
+      "subtitle": "Unverifiable -- caught before the repair loop",
+      "file": "unverifiable.json",
+      "narrative": "Unseeded random + wall clock. The original script disagrees with itself across two runs, so Sunset flags it unverifiable instead of running a meaningless diff."
+    }
+  ]
+}

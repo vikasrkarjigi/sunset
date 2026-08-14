@@ -1,0 +1,200 @@
+{
+  "verdict": "escalated",
+  "fixture_name": "c_never_converges",
+  "legacy_image": "python:2.7-slim",
+  "modern_image": "python:3.12-slim",
+  "determinism_check_passed": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "candidate_script": "# Attempt 1: uses Python 3 true division + round(). Wrong -- the legacy\n# behaviour is floor division, and round() disagrees on the .5 boundary\n# rows because Python 3's round() uses banker's rounding.\ndef main():\n    values = [7, 3, 9, 2, 5, 8, 1, 6, 4, 10]\n    cumulative = 0\n    for i, v in enumerate(values, 1):\n        cumulative += v\n        avg = round(cumulative / i)\n        print(\"row %d: cumulative=%d avg=%d\" % (i, cumulative, avg))\n\n\nif __name__ == '__main__':\n    main()\n",
+      "legacy": {
+        "stdout": "row 1: cumulative=7 avg=7\nrow 2: cumulative=10 avg=5\nrow 3: cumulative=19 avg=6\nrow 4: cumulative=21 avg=5\nrow 5: cumulative=26 avg=5\nrow 6: cumulative=34 avg=5\nrow 7: cumulative=35 avg=5\nrow 8: cumulative=41 avg=5\nrow 9: cumulative=45 avg=5\nrow 10: cumulative=55 avg=5\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 1593,
+        "sandbox_id": "c86ef6a9-a1a7-43d1-ba38-2cfa79b9c37a"
+      },
+      "candidate": {
+        "stdout": "row 1: cumulative=7 avg=7\nrow 2: cumulative=10 avg=5\nrow 3: cumulative=19 avg=6\nrow 4: cumulative=21 avg=5\nrow 5: cumulative=26 avg=5\nrow 6: cumulative=34 avg=6\nrow 7: cumulative=35 avg=5\nrow 8: cumulative=41 avg=5\nrow 9: cumulative=45 avg=5\nrow 10: cumulative=55 avg=6\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 1843,
+        "sandbox_id": "61c68ee2-82cc-42f4-8539-40987f784087"
+      },
+      "divergence": {
+        "kind": "content",
+        "rows": [
+          {
+            "line_no": 6,
+            "legacy_value": "row 6: cumulative=34 avg=5",
+            "rewrite_value": "row 6: cumulative=34 avg=6"
+          },
+          {
+            "line_no": 10,
+            "legacy_value": "row 10: cumulative=55 avg=5",
+            "rewrite_value": "row 10: cumulative=55 avg=6"
+          }
+        ],
+        "total_diverging": 2,
+        "total_compared": 10,
+        "exit_code_legacy": 0,
+        "exit_code_rewrite": 0
+      },
+      "feedback": "Attempt 1 diverged from the legacy behaviour.\n\nDivergence type: output content\nLine 6:\n  legacy output:  row 6: cumulative=34 avg=5\n  rewrite output: row 6: cumulative=34 avg=6\nLine 10:\n  legacy output:  row 10: cumulative=55 avg=5\n  rewrite output: row 10: cumulative=55 avg=6\nExit codes: legacy 0, rewrite 0\n\nTotal diverging rows: 2 of 10."
+    },
+    {
+      "attempt": 2,
+      "candidate_script": "# Attempt 2: \"fixed\" the rounding, but the fix introduced an off-by-one\n# denominator bug -- every row is now wrong in a different way.\ndef main():\n    values = [7, 3, 9, 2, 5, 8, 1, 6, 4, 10]\n    cumulative = 0\n    for i, v in enumerate(values, 1):\n        cumulative += v\n        avg = cumulative // (i + 1)\n        print(\"row %d: cumulative=%d avg=%d\" % (i, cumulative, avg))\n\n\nif __name__ == '__main__':\n    main()\n",
+      "legacy": {
+        "stdout": "row 1: cumulative=7 avg=7\nrow 2: cumulative=10 avg=5\nrow 3: cumulative=19 avg=6\nrow 4: cumulative=21 avg=5\nrow 5: cumulative=26 avg=5\nrow 6: cumulative=34 avg=5\nrow 7: cumulative=35 avg=5\nrow 8: cumulative=41 avg=5\nrow 9: cumulative=45 avg=5\nrow 10: cumulative=55 avg=5\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 1375,
+        "sandbox_id": "d19124d9-c133-4740-9134-ca6aecdc76b4"
+      },
+      "candidate": {
+        "stdout": "row 1: cumulative=7 avg=3\nrow 2: cumulative=10 avg=3\nrow 3: cumulative=19 avg=4\nrow 4: cumulative=21 avg=4\nrow 5: cumulative=26 avg=4\nrow 6: cumulative=34 avg=4\nrow 7: cumulative=35 avg=4\nrow 8: cumulative=41 avg=4\nrow 9: cumulative=45 avg=4\nrow 10: cumulative=55 avg=5\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 5734,
+        "sandbox_id": "11ca00d6-cab5-431e-8792-aa0de2ca2e99"
+      },
+      "divergence": {
+        "kind": "content",
+        "rows": [
+          {
+            "line_no": 1,
+            "legacy_value": "row 1: cumulative=7 avg=7",
+            "rewrite_value": "row 1: cumulative=7 avg=3"
+          },
+          {
+            "line_no": 2,
+            "legacy_value": "row 2: cumulative=10 avg=5",
+            "rewrite_value": "row 2: cumulative=10 avg=3"
+          },
+          {
+            "line_no": 3,
+            "legacy_value": "row 3: cumulative=19 avg=6",
+            "rewrite_value": "row 3: cumulative=19 avg=4"
+          },
+          {
+            "line_no": 4,
+            "legacy_value": "row 4: cumulative=21 avg=5",
+            "rewrite_value": "row 4: cumulative=21 avg=4"
+          },
+          {
+            "line_no": 5,
+            "legacy_value": "row 5: cumulative=26 avg=5",
+            "rewrite_value": "row 5: cumulative=26 avg=4"
+          },
+          {
+            "line_no": 6,
+            "legacy_value": "row 6: cumulative=34 avg=5",
+            "rewrite_value": "row 6: cumulative=34 avg=4"
+          },
+          {
+            "line_no": 7,
+            "legacy_value": "row 7: cumulative=35 avg=5",
+            "rewrite_value": "row 7: cumulative=35 avg=4"
+          },
+          {
+            "line_no": 8,
+            "legacy_value": "row 8: cumulative=41 avg=5",
+            "rewrite_value": "row 8: cumulative=41 avg=4"
+          },
+          {
+            "line_no": 9,
+            "legacy_value": "row 9: cumulative=45 avg=5",
+            "rewrite_value": "row 9: cumulative=45 avg=4"
+          }
+        ],
+        "total_diverging": 9,
+        "total_compared": 10,
+        "exit_code_legacy": 0,
+        "exit_code_rewrite": 0
+      },
+      "feedback": "Attempt 2 diverged from the legacy behaviour.\n\nDivergence type: output content\nLine 1:\n  legacy output:  row 1: cumulative=7 avg=7\n  rewrite output: row 1: cumulative=7 avg=3\nLine 2:\n  legacy output:  row 2: cumulative=10 avg=5\n  rewrite output: row 2: cumulative=10 avg=3\nLine 3:\n  legacy output:  row 3: cumulative=19 avg=6\n  rewrite output: row 3: cumulative=19 avg=4\nLine 4:\n  legacy output:  row 4: cumulative=21 avg=5\n  rewrite output: row 4: cumulative=21 avg=4\nLine 5:\n  legacy output:  row 5: cumulative=26 avg=5\n  rewrite output: row 5: cumulative=26 avg=4\n  ... and 4 more diverging lines\nExit codes: legacy 0, rewrite 0\n\nTotal diverging rows: 9 of 10."
+    },
+    {
+      "attempt": 3,
+      "candidate_script": "# Attempt 3: misread the spec entirely -- reports the running max\n# instead of the running average. Exhausts the 3-attempt budget.\ndef main():\n    values = [7, 3, 9, 2, 5, 8, 1, 6, 4, 10]\n    cumulative = 0\n    for i, v in enumerate(values, 1):\n        cumulative += v\n        avg = max(values[:i])\n        print(\"row %d: cumulative=%d avg=%d\" % (i, cumulative, avg))\n\n\nif __name__ == '__main__':\n    main()\n",
+      "legacy": {
+        "stdout": "row 1: cumulative=7 avg=7\nrow 2: cumulative=10 avg=5\nrow 3: cumulative=19 avg=6\nrow 4: cumulative=21 avg=5\nrow 5: cumulative=26 avg=5\nrow 6: cumulative=34 avg=5\nrow 7: cumulative=35 avg=5\nrow 8: cumulative=41 avg=5\nrow 9: cumulative=45 avg=5\nrow 10: cumulative=55 avg=5\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 1858,
+        "sandbox_id": "0cc526a0-85b1-421e-885f-432f375e37c9"
+      },
+      "candidate": {
+        "stdout": "row 1: cumulative=7 avg=7\nrow 2: cumulative=10 avg=7\nrow 3: cumulative=19 avg=9\nrow 4: cumulative=21 avg=9\nrow 5: cumulative=26 avg=9\nrow 6: cumulative=34 avg=9\nrow 7: cumulative=35 avg=9\nrow 8: cumulative=41 avg=9\nrow 9: cumulative=45 avg=9\nrow 10: cumulative=55 avg=10\n",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 1843,
+        "sandbox_id": "1872e696-4757-41ab-adfe-377b691ef7b0"
+      },
+      "divergence": {
+        "kind": "content",
+        "rows": [
+          {
+            "line_no": 2,
+            "legacy_value": "row 2: cumulative=10 avg=5",
+            "rewrite_value": "row 2: cumulative=10 avg=7"
+          },
+          {
+            "line_no": 3,
+            "legacy_value": "row 3: cumulative=19 avg=6",
+            "rewrite_value": "row 3: cumulative=19 avg=9"
+          },
+          {
+            "line_no": 4,
+            "legacy_value": "row 4: cumulative=21 avg=5",
+            "rewrite_value": "row 4: cumulative=21 avg=9"
+          },
+          {
+            "line_no": 5,
+            "legacy_value": "row 5: cumulative=26 avg=5",
+            "rewrite_value": "row 5: cumulative=26 avg=9"
+          },
+          {
+            "line_no": 6,
+            "legacy_value": "row 6: cumulative=34 avg=5",
+            "rewrite_value": "row 6: cumulative=34 avg=9"
+          },
+          {
+            "line_no": 7,
+            "legacy_value": "row 7: cumulative=35 avg=5",
+            "rewrite_value": "row 7: cumulative=35 avg=9"
+          },
+          {
+            "line_no": 8,
+            "legacy_value": "row 8: cumulative=41 avg=5",
+            "rewrite_value": "row 8: cumulative=41 avg=9"
+          },
+          {
+            "line_no": 9,
+            "legacy_value": "row 9: cumulative=45 avg=5",
+            "rewrite_value": "row 9: cumulative=45 avg=9"
+          },
+          {
+            "line_no": 10,
+            "legacy_value": "row 10: cumulative=55 avg=5",
+            "rewrite_value": "row 10: cumulative=55 avg=10"
+          }
+        ],
+        "total_diverging": 9,
+        "total_compared": 10,
+        "exit_code_legacy": 0,
+        "exit_code_rewrite": 0
+      },
+      "feedback": "Attempt 3 diverged from the legacy behaviour.\n\nDivergence type: output content\nLine 2:\n  legacy output:  row 2: cumulative=10 avg=5\n  rewrite output: row 2: cumulative=10 avg=7\nLine 3:\n  legacy output:  row 3: cumulative=19 avg=6\n  rewrite output: row 3: cumulative=19 avg=9\nLine 4:\n  legacy output:  row 4: cumulative=21 avg=5\n  rewrite output: row 4: cumulative=21 avg=9\nLine 5:\n  legacy output:  row 5: cumulative=26 avg=5\n  rewrite output: row 5: cumulative=26 avg=9\nLine 6:\n  legacy output:  row 6: cumulative=34 avg=5\n  rewrite output: row 6: cumulative=34 avg=9\n  ... and 4 more diverging lines\nExit codes: legacy 0, rewrite 0\n\nTotal diverging rows: 9 of 10."
+    }
+  ],
+  "final_candidate": null
+}

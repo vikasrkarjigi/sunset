@@ -1,0 +1,45 @@
+{
+  "verdict": "unverifiable",
+  "fixture_name": "d_nondeterministic",
+  "legacy_image": "python:2.7-slim",
+  "modern_image": "python:3.12-slim",
+  "determinism_check_passed": false,
+  "attempts": [
+    {
+      "attempt": 0,
+      "candidate_script": "# Legacy session logger. Unseeded random + wall-clock time -- this\n# script is not verifiable by diffing two runs, because two runs of the\n# SAME script will never match each other, let alone a rewrite. Sunset's\n# determinism pre-check catches this before wasting a repair attempt.\nimport random\nimport time\n\n\ndef main():\n    session_id = random.randint(100000, 999999)\n    print(\"session=%d generated_at=%f\" % (session_id, time.time()))\n\n\nif __name__ == '__main__':\n    main()\n",
+      "legacy": {
+        "stdout": "",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 0,
+        "sandbox_id": ""
+      },
+      "candidate": {
+        "stdout": "",
+        "stderr": "",
+        "exit_code": 0,
+        "files": {},
+        "duration_ms": 0,
+        "sandbox_id": ""
+      },
+      "divergence": {
+        "kind": "content",
+        "rows": [
+          {
+            "line_no": 1,
+            "legacy_value": "session=811864 generated_at=1786738900.183011",
+            "rewrite_value": "session=423625 generated_at=1786738900.265109"
+          }
+        ],
+        "total_diverging": 1,
+        "total_compared": 1,
+        "exit_code_legacy": 0,
+        "exit_code_rewrite": 0
+      },
+      "feedback": "Attempt 0 diverged from the legacy behaviour.\n\nDivergence type: output content\nLine 1:\n  legacy output:  session=811864 generated_at=1786738900.183011\n  rewrite output: session=423625 generated_at=1786738900.265109\nExit codes: legacy 0, rewrite 0\n\nThe ORIGINAL script disagreed with itself across two fresh runs. This script is non-deterministic and cannot be verified by output diffing.\n\nTotal diverging rows: 1 of 1."
+    }
+  ],
+  "final_candidate": null
+}
