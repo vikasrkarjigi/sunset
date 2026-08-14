@@ -4,4 +4,13 @@ sunset/.venv/
 sunset/__pycache__/
 sunset/**/__pycache__/
 *.pyc
+*.stackdump
+
+# Non-project scaffolding (RocketRide template, tooling config) -- not part of Sunset
+.claude/
+.cursor/
+.github/
+.windsurf/
+AGENTS.md
+CLAUDE.md
 
