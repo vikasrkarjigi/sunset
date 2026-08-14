@@ -1,52 +1,20 @@
 import { useState } from 'react'
 import { FIXTURE_INVENTORY } from './assets/fixtures/fixtureInventory'
 import { normalizeAllFixtures } from './lib/evidence/normalizeFixture'
+import { ResultCardGrid } from './components/results/ResultCardGrid'
 import { OutputDiffPanel } from './components/evidence/OutputDiffPanel'
-import type { AnyResult, NormalizedResult } from './types/evidence'
+import { toCardViewModel } from './types/results'
+import type { NormalizedResult } from './types/evidence'
 import './styles.css'
 
-// Normalize at module load — fixtures are static, never change at runtime.
-const RESULTS: AnyResult[] = normalizeAllFixtures(FIXTURE_INVENTORY)
+// Normalize and convert to card view models at module load — fixtures are static.
+const RESULTS = normalizeAllFixtures(FIXTURE_INVENTORY)
+const CARD_MODELS = RESULTS.map(toCardViewModel)
 
 const VERDICT_LABELS: Record<string, string> = {
   green_light: 'Green Light',
   escalated: 'Escalated',
   unverifiable: 'Unverifiable',
-}
-
-// ── result card ───────────────────────────────────────────────────────────────
-
-interface ResultCardProps {
-  readonly result: AnyResult
-  readonly isSelected: boolean
-  readonly onSelect: () => void
-}
-
-function ResultCard({ result, isSelected, onSelect }: ResultCardProps) {
-  const verdictClass = result.isValid
-    ? `result-card--${result.verdict}`
-    : 'result-card--invalid'
-  const verdictLabel = result.isValid
-    ? (VERDICT_LABELS[result.verdict] ?? result.verdict)
-    : 'Invalid'
-
-  return (
-    <li className="result-card-item">
-      <button
-        className={`result-card${isSelected ? ' result-card--selected' : ''} ${verdictClass}`}
-        onClick={onSelect}
-        aria-pressed={isSelected}
-        aria-label={`Select ${result.title}`}
-        data-testid={`result-card-${result.id}`}
-      >
-        <span className="result-card-title">{result.title}</span>
-        <span className="result-card-subtitle">{result.subtitle}</span>
-        <span className={`result-card-verdict verdict--${result.isValid ? result.verdict : 'invalid'}`}>
-          {verdictLabel}
-        </span>
-      </button>
-    </li>
-  )
 }
 
 // ── evidence detail ───────────────────────────────────────────────────────────
@@ -102,25 +70,11 @@ function App() {
       </header>
 
       <main className="app-main" role="main">
-        <section className="results-section" aria-label="Verification results">
-          <h2 className="results-heading">Verification Results</h2>
-          <ul
-            className="result-card-list"
-            role="list"
-            aria-label="Result cards"
-          >
-            {RESULTS.map((result) => (
-              <ResultCard
-                key={result.id}
-                result={result}
-                isSelected={result.id === selectedId}
-                onSelect={() => {
-                  setSelectedId(result.id)
-                }}
-              />
-            ))}
-          </ul>
-        </section>
+        <ResultCardGrid
+          results={CARD_MODELS}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+        />
 
         {selectedResult !== null ? (
           <EvidenceDetail result={selectedResult} />

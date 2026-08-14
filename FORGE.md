@@ -28,3 +28,10 @@
 - **Files:** 9 (+1585/-45)
 - **Duration:** 710ss
 - **Approach:** WO-013 (the declared blocker) was absent from the branch, so I built the full foundation: normalized evidence types in src/types/evidence.ts, a fixture normalization pipeline in src/lib/evidence/normalizeFixture.ts, a standalone LCS-based line diff algorithm in src/lib/evidence/diffLines.ts, and the OutputDiffPanel React component in src/components/evidence/. The diff algorithm splits text by line, computes an LCS table, backtracks to produce typed operations (eq/rm/ins), then post-processes consecutive removed+added blocks into 'changed' pairs for compact side-by-side display. All output is rendered as plain React text nodes; no dangerouslySetInnerHTML. App.tsx was upgraded from the static loading shell to a full interactive demo: four result cards (from the real normalized fixtures) with click-to-select, an EvidenceDetail section showing the verdict badge and OutputDiffPanel for the selected result. App.test.tsx was rewritten to cover the new interactive behavior and serve as the AC-4 integration test.
+
+## WO-006: User Story: WO-006 - Render Four Result Cards
+- **Status:** completed
+- **Commit:** `5eb2301`
+- **Files:** 8 (+767/-57)
+- **Duration:** 499ss
+- **Approach:** Introduced a presentation-layer CardViewModel type (CardStatus, STATUS_LABELS, toCardViewModel) in src/types/results.ts that adapts AnyResult evidence types into plain view objects. ResultCard renders a single card as an accessible <button> inside an <li>, with status badge, title, subtitle, attempt summary, and optional inline error. ResultCardGrid wraps n cards in a <section><ul> and imports supplementary dashboard.css for badge colour and error styling. App.tsx was refactored to remove the inline ResultCard function and use ResultCardGrid + CARD_MODELS computed at module load. A committed mock fixtures file (test-fixtures/mockCardViewModels.ts) provides five named states (pass, fail, timeout, error, malformed) shared across both test files.
