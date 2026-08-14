@@ -1,0 +1,7 @@
+.rocketride/
+.env
+sunset/.venv/
+sunset/__pycache__/
+sunset/**/__pycache__/
+*.pyc
+
