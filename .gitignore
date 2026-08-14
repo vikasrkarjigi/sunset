@@ -5,3 +5,13 @@ sunset/__pycache__/
 sunset/**/__pycache__/
 *.pyc
 
+.claude/
+CLAUDE.md
+
+# sunset-spa — Vite/Node build artifacts
+sunset-spa/node_modules/
+sunset-spa/dist/
+sunset-spa/.playwright/
+sunset-spa/test-results/
+sunset-spa/playwright-report/
+sunset-spa/coverage/
