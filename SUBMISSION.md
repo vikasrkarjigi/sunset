@@ -6,8 +6,11 @@ Draft per plan Step 6. Fill in bracketed items, then this is submission-ready.
 
 ## Team details
 
-- **Team name:** [fill in]
-- **Members:** [fill in — solo: your name + email]
+- **Team name:** Ship It And Pray
+- **Members:**
+  - Uday Venkatesha
+  - Vikas Ravikumar Karjigi (vikasravikarjigi26@gmail.com)
+  - Tyshawn Hill
 - **Track:** Legacy Modernization
 
 ---
@@ -59,9 +62,16 @@ Delivery note: the honest version below differs from the build spec's original d
 
 ---
 
+## Working prototype link
+
+- **Primary:** [paste the Forge-deployed URL here once the coding agent batch finishes]
+- **Backup / evidence of real backend work:** `https://github.com/vikasrkarjigi/sunset` — the actual verification engine (Daytona sandbox orchestration, differ, feedback loop) lives here, fully committed, with real job-result JSON generated from live Daytona runs. If the Forge UI isn't fully ready at submission time, this repo plus a terminal run of `python -m sunset.cli verify --fixture a` is a complete, working, honest prototype on its own.
+
+---
+
 ## Backup video — shot list
 
-Record from the Daytona environment by 4:15 PM per the reference doc's hard deadline. Venue wifi is not a dependency for this shot list — everything runs from the terminal.
+Record this now if you have not already — everything runs from the terminal, so venue wifi is not a dependency.
 
 1. **[0:00–0:15]** Title card / verbal: problem statement, one sentence with the 40% number.
 2. **[0:15–0:45]** Terminal: `python -m sunset.cli verify --fixture a`. Let attempt 1's failure print fully — don't cut away from the red divergence.
@@ -78,15 +88,15 @@ Keep total runtime at 2–3 minutes. Cut Script C's segment first if running lon
 
 ## Submission checklist
 
-- [ ] Working prototype link — hosted URL, built on Forge, verified running in/against a Daytona sandbox
-- [ ] Demo — live demonstration ready, plus this backup video recorded from the Daytona environment
-- [ ] Team details filled in above
-- [ ] Problem overview — ready to paste, above
-- [ ] Script A verified to fail attempt 1, pass attempt 2 (confirmed locally — see `sample_job_result.json`; **re-confirm against live Daytona sandboxes once Step 0 is unblocked**)
-- [ ] Script B verified to pass cleanly
-- [ ] Script C escalation path tested at least once
-- [ ] Script D unverifiable path tested at least once
+- [x] Team details filled in above
+- [x] Problem overview — ready to paste, above
+- [x] Script A verified to fail attempt 1, pass attempt 2 — **confirmed live against real Daytona sandboxes, rerun 3× with identical results** (`sunset/job_result_a.json`)
+- [x] Script B verified to pass cleanly — confirmed live (`sunset/job_result_b.json`)
+- [x] Script C escalation path tested — confirmed live (`sunset/job_result_c.json`)
+- [x] Script D unverifiable path tested — confirmed live (`sunset/job_result_d.json`)
+- [ ] Working prototype link — paste the Forge-deployed URL above once the coding agent batch finishes; GitHub repo is the fallback and is already real
+- [ ] Demo — decide live vs. backup video; if recording, follow the shot list below
 - [ ] The "why we needed Daytona" sentence rehearsed out loud
-- [ ] Evidence of Forge prompt-and-iterate cycles available if judges ask (screenshots of the iteration history)
+- [ ] Evidence of Forge prompt-and-iterate cycles available if judges ask — you already have this: the screenshots from this build session (Intent → PRD-Spec → Architecture → Epics → Work Orders → Batch Coding Agent)
 
-**Hard deadline: submission materials done by 3:45 PM regardless of build state.**
+**Your actual deadline is 3:30 PM today. Submit with whatever is live/working at that time — a submitted CLI + GitHub repo beats a better project that missed the form.**
